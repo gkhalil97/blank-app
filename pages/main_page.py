@@ -124,7 +124,7 @@ Keep bullet points short. Please make sure to separate out each individual 'feat
             # Responses API call (text-in, text-out)
             out = client.responses.create(
                 model="gpt-5-nano",   # use a capable, cost-efficient model
-                input=[{"role": "user", "content": user_prompt}],
+                input=user_prompt,
                 tools= [{
                         "type" : "file_search",
                         "vector_store_ids" : ["vs_68bafa7f6d3c81919a21cd7ca01c43b1"],
