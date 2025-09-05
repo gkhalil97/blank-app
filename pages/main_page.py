@@ -7,6 +7,7 @@ import time
 # Main page content
 st.markdown("# Presentation")
 st.caption(f"Streamlit version: {st.__version__}")
+st.write("openai package version:", getattr(OpenAI, "__version__", "unknown"))
 st.sidebar.markdown("# Presentation")
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
