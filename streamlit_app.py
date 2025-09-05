@@ -8,6 +8,25 @@ st.write(
     "journey by first inputting your patients main five demographics: Age, Gender, PC, PMHx, DHx. Please then work through the patient journey from history and examination, to investigation and then to diagnosis. "
 )
 
+import streamlit as st
+
+# try to locate the installed package + client class
+try:
+    from openai import OpenAI
+    st.write("OpenAI class repr:", OpenAI)
+    st.write("OpenAI class module:", OpenAI.__module__)
+    mod = __import__(OpenAI.__module__.split('.')[0])
+    st.write("Module file:", getattr(mod, "__file__", "(no __file__)"))
+except Exception as e:
+    st.error(f"Import failed: {e}")
+
+# try to read the installed distribution version
+try:
+    import importlib.metadata as im
+    st.write("openai dist version:", im.version("openai"))
+except Exception as e:
+    st.write("openai dist version lookup failed:", e)
+
 
 # Define the pages
 main_page = st.Page("pages/main_page.py", title="Presentation", icon="🎈")
