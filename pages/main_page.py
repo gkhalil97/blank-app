@@ -120,7 +120,7 @@ Output sections:
 Keep bullet points short. Please make sure to separate out each individual 'feature' of a history or exam into a different bullet point as we shall need to comment on each one. For example when noting if the pain started suddenly or slowly, keep these in different bullet points. For the type of pain have whether the pain is tearing, or crushing, or pressure etc in different bullet points. For location define all the different locations into different bullet points. Simiularly for all symptoms and thier descriptions. Please do not group multiple symptoms into one bullet point when doing a symptom review, the same for pmhx, fhx, shx, or any history points. For examinations please seperate out the vital signs into different bullet points, similarly for any of the exam points. Please dont add any notes or additional comments. 
 """
     with st.spinner("Generating checklist..."):
-        try:
+        #try:
             # Responses API call (text-in, text-out)
             out = client.responses.create(
                 model="gpt-5-nano",   # use a capable, cost-efficient model
@@ -141,8 +141,8 @@ Keep bullet points short. Please make sure to separate out each individual 'feat
                 placeholder.write(f"Switching to checklist in {i}…")
                 time.sleep(1)
             st.switch_page("pages/page_2.py")
-        except Exception as e:
-            st.error(f"Checklist request failed: {e}")
+        #except Exception as e:
+            #st.error(f"Checklist request failed: {e}")
     
     # your logic for generating goes here
 
