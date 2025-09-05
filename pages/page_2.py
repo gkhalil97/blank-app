@@ -2,6 +2,7 @@ import streamlit as st
 # pages/Checklist.py
 import streamlit as st
 import re
+from openai import OpenAI
 
 def parse_sections_by_bullets(text: str):
     BULLET_RE = re.compile(r'^\s*[-*•+]\s+(.*)$')
