@@ -11,12 +11,12 @@ st.sidebar.markdown("# Presentation")
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-left, right = st.columns(2, border=True)
+left, right = st.columns(2)
 
 left.number_input ("🕰️ Age", value=None, key="age")
 right.selectbox ("👩🏻👨🏻 Gender", ("Male", "Female"), key="gender")
 
-centre, = st.columns(1, border=True)
+centre, = st.columns(1)
 with centre:
     new_PC = st.selectbox("🤢 Presenting Complaint", ("Chest Pain", "Abdominal Pain", "Other"))
     if new_PC == "Other":
@@ -24,7 +24,7 @@ with centre:
 
 st.session_state["PC"] = new_PC
 
-left1, right1 = st.columns (2, border=True)
+left1, right1 = st.columns (2)
 left1.text_area ("🔄 PMHx", placeholder = "Please enter every element of their past medical history separated by a comma, if none please type 'none'.", key="PMHx")
 right1.text_area ("💊 DHx", placeholder = "Please enter all medications separated by a comma, if none please type 'none'. ", key="DHx")
 
