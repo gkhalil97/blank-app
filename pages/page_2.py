@@ -16,7 +16,7 @@ def parse_sections_by_bullets(text: str):
 st.markdown("## 📝 Checklist")
 
 # Grab stored text (fallback if missing)
-api_text = st.session_state.get("AIresponse", "- No checklist available")
+api_text = st.session_state.get("AIoutput", "- No checklist available")
 
 items = parse_sections_by_bullets(api_text)
 

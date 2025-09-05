@@ -122,7 +122,7 @@ Keep bullet points short. Please make sure to separate out each individual 'feat
     with st.spinner("Generating checklist..."):
         try:
             # Responses API call (text-in, text-out)
-            resp = client.responses.create(
+            out = client.responses.create(
                 model="gpt-5-nano",   # use a capable, cost-efficient model
                 input=[{"role": "user", "content": user_prompt}],
                 tools= [{
@@ -132,10 +132,10 @@ Keep bullet points short. Please make sure to separate out each individual 'feat
             )
 
             # Extract the text
-            st.session_state["AIresponse"] = resp.output_text
-            checklist_id = resp.id
+            st.session_state["AIoutput"] = out.output_text
+            checklist_id = out.id
             st.success("✅ Checklist generated")
-            st.markdown (st.session_state["AIresponse"])
+            st.markdown (st.session_state["AIoutput"])
             placeholder = st.empty()
             for i in range (5, 0, -1):
                 placeholder.write(f"Switching to checklist in {i}…")
