@@ -32,7 +32,7 @@ pg.run()
 import time
 # --- DEV ONLY: boot page_2 with sample JSON ---
 if st.sidebar.button("🧪 Dev: open page 2 with sample"):
-    st.session_state["AIoutput"] = """{
+    test = """{
       "presenting_complaint": "Chest pain",
       "age": 54,
       "gender": "male",
@@ -97,4 +97,6 @@ if st.sidebar.button("🧪 Dev: open page 2 with sample"):
         ]
       }
     }"""
+    st.session_state["AIoutput"]=json.loads(test)
+
     st.switch_page("pages/page_2.py")
