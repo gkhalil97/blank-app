@@ -313,7 +313,7 @@ if st.sidebar.button("🧪 Dev: open page 2 with sample"):
         "maximum": null,
         "step": null,
         "unit": null,
-        "pattern": "^[0-9]+(\\\\.[0-9]+)?\\\\s*(min|mins|minutes|h|hr|hrs|hours)$",
+        "pattern": null,
         "minLength": 1,
         "maxLength": 20
       },
@@ -536,7 +536,7 @@ if st.sidebar.button("🧪 Dev: open page 2 with sample"):
         "maximum": null,
         "step": null,
         "unit": null,
-        "pattern": ".",
+        "pattern": "null",
         "minLength": 0,
         "maxLength": 200
       },
@@ -552,7 +552,7 @@ if st.sidebar.button("🧪 Dev: open page 2 with sample"):
         "maximum": null,
         "step": null,
         "unit": null,
-        "pattern": ".",
+        "pattern": "null",
         "minLength": 0,
         "maxLength": 160
       }

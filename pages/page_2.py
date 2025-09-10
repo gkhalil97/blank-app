@@ -153,12 +153,6 @@ def render_item(item):
             errs.append(f"Min length {min_len}")
         if max_len is not None and len(val) > max_len:
             errs.append(f"Max length {max_len}")
-        if pattern not in (None, "null") and pattern not in ("", ".*"):
-            try:
-                if not re.fullmatch(pattern, val):
-                    errs.append("Doesn't match required pattern")
-            except re.error:
-                st.warning(f"Invalid regex in pattern for '{label}'.")
         if errs:
             st.warning(" ; ".join(errs))
 
