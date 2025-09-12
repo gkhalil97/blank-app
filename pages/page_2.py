@@ -213,26 +213,31 @@ if st.button("Submit Checklist"):
     with st.spinner("Uploading checklist..."):
         try:
             # Responses API call (text-in, text-out)
-            out = client.responses.create(
-                model="gpt-5-nano",   # use a capable, cost-efficient model
-                input=json.dumps(answers),
+            out = client.responses.create (
+                prompt = {
+                    "id": "pmpt_68c18bb506ec819685c867061bbce13802152266a9918ce2",
+                    "version": "21",
+                    "variables": {
+                        "answer": json.dumps(answers)
+                        }},
                 store=True,
-                previous_response_id=st.session_state.get("checklist_id"),
-                tools= [{
-                        "type" : "file_search",
-                        "vector_store_ids" : ["vs_68bafa7f6d3c81919a21cd7ca01c43b1"],
-                    }],
+                previous_response_id=st.session_state.get("checklist_id")  
             )
 
             # Extract the text
-            st.session_state["AIoutput2"] = out.output_text
+            if "AIoutput2" not in st.session_state:
+                st.session_state.AIoutput2 = {}
+            if "checklist_id2" not in st.session_state:
+                st.session_state.checklist_id2= {}
+
+            st.session_state["AIoutput2"] = json.loads(out.output_text)
             st.session_state["checklist_id2"] = out.id
             #st.markdown (st.session_state["AIoutput2"])
         except Exception as e:
             st.error(f"Checklist request failed: {e}")
-st.success("✅ Pre-test probabilities calculated")
-placeholder = st.empty()
-for i in range (5, 0, -1):
-    placeholder.write(f"Switching to Probabilities in {i}…")
-    time.sleep(1)
-st.switch_page("pages/page_3.py")
+    st.success("✅ Pre-test probabilities calculated")
+    placeholder = st.empty()
+    for i in range (5, 0, -1):
+        placeholder.write(f"Switching to Probabilities in {i}…")
+        time.sleep(1)
+    st.switch_page("pages/page_3.py")

@@ -56,7 +56,7 @@ if st.button("Generate Checklist", disabled=not all_fields_filled):
             out = client.responses.create(
                 prompt={
                     "id": "pmpt_68bf7334017481948669f4b41306f6240d2d9e134aedefe3",
-                    "version": "13",
+                    "version": "16",
                     "variables": {
                     "pc": pc,
                     "age": str(age),
