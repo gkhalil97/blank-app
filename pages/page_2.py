@@ -12,7 +12,9 @@ st.markdown("## 📝 Checklist")
 
 # Grab stored text (fallback if missing)
 data = st.session_state.get("AIoutput", "- No checklist available")
-
+if data == "- No checklist available":
+    "Please generate a checklist"
+    st.stop()
 
 #if isinstance(data, (str, bytes, bytearray)):
    # try:
@@ -57,6 +59,17 @@ rr = vitals_cols[3].number_input('RR/min', min_value=1, max_value=40)
 dbp = bp_cols[1].number_input('dBP', min_value=0, max_value=140)
 sbp = bp_cols[0].number_input('sBP', min_value=20, max_value=240)
 
+answers["presenting_complaint"] = data.get("presenting_complaint", "—")
+answers["age"]= data.get("age", "—")
+answers["gender"] = data.get("gender", "—")
+answers["past_medical_history"] = data.get("pmhx", "—")
+answers["drug_history"] = data.get("dhx", "—")
+answers["obs_hr"] = hr
+answers["obs_temp"] = temp
+answers["obs_sats"] = sats
+answers["obs_rr"] = rr
+answers["obs_dbp"] = dbp
+answers["obs_sbp"] = sbp
 
 def render_item(item):
     """
@@ -180,6 +193,7 @@ for section_key in [
         for it in items:
             render_item(it)
 
+
 # Save/export
 col_a, col_b = st.columns([1,1])
 if col_a.button("Save current answers"):
@@ -201,24 +215,13 @@ if col_b.download_button(
 
 
 # --- Action button ---
-if st.button("Submit Checklist", disabled=not all_filled):
-
-    checklist_commented = "\n".join(infoback)
-
-
-    user_prompt = f"""
-    Here are my checklist responses:
-
-    {checklist_commented}
-
-    Please calculate pre-test probabilities and recommend investigations,
-    """
+if st.button("Submit Checklist"):
     with st.spinner("Generating checklist..."):
         try:
             # Responses API call (text-in, text-out)
             out = client.responses.create(
                 model="gpt-5-nano",   # use a capable, cost-efficient model
-                input=user_prompt,
+                input=json.dumps(answers),
                 store=True,
                 previous_response_id=st.session_state.get("checklist_id"),
                 tools= [{
