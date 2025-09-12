@@ -207,16 +207,10 @@ if col_b.download_button(
     mime="application/json"
 ):
     st.toast("Downloaded.")
-
-
-
-
-
-
-
+    
 # --- Action button ---
 if st.button("Submit Checklist"):
-    with st.spinner("Generating checklist..."):
+    with st.spinner("Uploading checklist..."):
         try:
             # Responses API call (text-in, text-out)
             out = client.responses.create(
@@ -233,13 +227,12 @@ if st.button("Submit Checklist"):
             # Extract the text
             st.session_state["AIoutput2"] = out.output_text
             st.session_state["checklist_id2"] = out.id
-            st.success("✅ Checklist generated")
             #st.markdown (st.session_state["AIoutput2"])
-            placeholder = st.empty()
-            for i in range (5, 0, -1):
-                placeholder.write(f"Switching to Probabilities in {i}…")
-                time.sleep(1)
-            st.switch_page("pages/page_3.py")
         except Exception as e:
             st.error(f"Checklist request failed: {e}")
-    st.success("✅ Pre-test probabilities calculated")
+st.success("✅ Pre-test probabilities calculated")
+placeholder = st.empty()
+for i in range (5, 0, -1):
+    placeholder.write(f"Switching to Probabilities in {i}…")
+    time.sleep(1)
+st.switch_page("pages/page_3.py")
