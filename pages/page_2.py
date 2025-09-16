@@ -216,12 +216,12 @@ if st.button("Submit Checklist"):
             out = client.responses.create (
                 prompt = {
                     "id": "pmpt_68c18bb506ec819685c867061bbce13802152266a9918ce2",
-                    "version": "21",
+                    "version": "22",
                     "variables": {
                         "answer": json.dumps(answers)
                         }},
-                store=True,
-                previous_response_id=st.session_state.get("checklist_id")  
+                #store=True,
+                #previous_response_id=st.session_state.get("checklist_id")  
             )
 
             # Extract the text
