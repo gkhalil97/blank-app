@@ -25,13 +25,22 @@ from typing import List, Dict
 
 # ---------- Session init ----------
 if "added_dx" not in st.session_state:
-    st.session_state.added_dx: List[Dict] = []  # {"diagnosis": str, "probability": float}
+    st.session_state.added_dx = []  # {"diagnosis": str, "probability": float}
 if "added_ix" not in st.session_state:
     # {"category": "bloods|bedside|radiology", "test": str, "priority": int, "rationale": str, "targets": [str], "result": Optional[str]}
-    st.session_state.added_ix: List[Dict] = []
+    st.session_state.added_ix = []
 if "ix_results" not in st.session_state:
-    st.session_state.ix_results = {"bloods": {}, "bedside": {}, "radiology": {}}
+    st.session_state.ix_results = {
+        "bloods": [],
+        "bedside": [],
+        "radiology": []
+    }
 
+ix_results = {
+        "bloods": [],
+        "bedside": [],
+        "radiology": []
+    }
 # ---------- Safe getters for possibly-empty model output ----------
 model_dx = data.get("differentials", []) or []
 model_ix = data.get("recommended_investigations", {}) or {}
@@ -120,8 +129,6 @@ st.divider()
 # ---------- INVESTIGATIONS ----------
 st.header("Investigations & Results")
 
-ix_results = {"bloods": {}, "bedside": {}, "radiology": {}}
-
 def render_ix_group(title: str, items: List[Dict], cat_key: str):
     st.subheader(title)
     if not items:
@@ -136,9 +143,26 @@ def render_ix_group(title: str, items: List[Dict], cat_key: str):
         add_box = st.checkbox("Add result", key=f"chk_{cat_key}_{test}")
         if add_box:
             val = st.text_input("Result", key=f"in_{cat_key}_{test}",
-                                placeholder="e.g., 45 ng/L, 'ST depression', 'mediastinal widening'")
+                                placeholder="e.g., 45 (units and assay type added below), 'ST depression', 'mediastinal widening'")
+            units = ""
+            assay_type = ""
+            if cat_key == "bloods":
+                units = st.text_input("Units", placeholder="e.g., ng/L, mmol/L", key=f"unit_{cat_key}_{test}")
+                assay_type = st.text_input("Assay type (if relevant)", placeholder="e.g., hs-troponin I", key=f"assay_{cat_key}_{test}")
             if val != "":
-                ix_results[cat_key][test] = val
+                entry = {
+                    "test": test,
+                    "result": val,
+                    "priority": prio,
+                    "rationale": rationale,
+                    "targets": item.get("targets", [])
+                }
+                if cat_key == "bloods":
+                    if units.strip():
+                        entry["units"] = units.strip()
+                    if assay_type.strip():
+                        entry["assay_type"] = assay_type.strip()
+                ix_results[cat_key].append(entry)
 
 # Render model investigations
 render_ix_group("Bloods",   model_ix["bloods"],   "bloods")
@@ -169,22 +193,36 @@ def render_add_investigation_expander(adjusted_dx_labels):
             if extra_target.strip():
                 if extra_target.strip() not in targets:
                     targets.append(extra_target.strip())
-
-            # Optional immediate result
-            add_result_now = st.checkbox("Enter a result now", key="ai1_add_result_now")
-            result_val = st.text_input("Result value", placeholder="e.g., 1200 ng/L / 'negative' / 'mediastinal widening'", key = "ai1_result_val") 
+            ready = (
+                bool(test_name.strip()) and
+                bool(rationale.strip()) and
+                bool(priority >= 1) and
+                bool(category in ["bloods", "bedside", "radiology"]) and
+                (bool(targets) or bool(extra_target.strip()))
+            )
 
             submitted = st.form_submit_button("Add investigation")
-            if submitted and test_name.strip():
-                st.session_state.added_ix.append({
-                    "category": category,
-                    "test": test_name.strip(),
-                    "priority": int(priority),
-                    "rationale": rationale.strip(),
-                    "targets": targets,
-                    "result": result_val.strip() if add_result_now and result_val else None
-                })
-                st.success(f"Added {category}: {test_name.strip()}")
+
+            if submitted:
+                ready = (
+                bool(test_name.strip()) and
+                bool(rationale.strip()) and
+                bool(priority >= 1) and
+                bool(category in ["bloods", "bedside", "radiology"]) and
+                (bool(targets) or bool(extra_target.strip()))
+                )
+                if ready: 
+                    st.session_state.added_ix.append({
+                        "category": category,
+                        "test": test_name.strip(),
+                        "priority": int(priority),
+                        "rationale": rationale.strip(),
+                        "targets": targets,
+                        "result": None  # to be filled later
+                    })
+                    st.success(f"Added {category}: {test_name.strip()}")
+                else:
+                    st.error("Please fill all fields.")
 
 # After render_ix_group(...) calls:
 existing_dx_labels = [d["diagnosis"] for d in adjusted_dx]  # from your sliders
@@ -215,17 +253,83 @@ if st.session_state.added_ix:
             add_box = st.checkbox("Add result", value=bool(preset), key=chk_key)
             if add_box:
                 val = st.text_input("Result", value=preset, key=in_key)
+                units_text = ""
+                assay_type_text = ""
+                if cat_key == "bloods":
+                    units_text = st.text_input("Units", placeholder="e.g., ng/L, mmol/L", key=f"unit_add_{cat_key}_{it['test']}")
+                    assay_type_text = st.text_input("Assay type (if relevant)", placeholder="e.g., hs-troponin I", key=f"assay_add_{cat_key}_{it['test']}")
+
                 if val != "":
-                    ix_results[cat_key][it["test"]] = val
+                    entry = {
+                        "test": it["test"],
+                        "result": val,
+                        "priority": it.get("priority", 999),
+                        "rationale": it.get("rationale", ""),
+                        "targets": it.get("targets", [])
+                    }
+                    # include units/assay_type in same dict so ix_results[cat_key] stays a list of dicts
+                    if cat_key == "bloods":
+                        if units_text.strip():
+                            entry["units"] = units_text.strip()
+                        if assay_type_text.strip():
+                            entry["assay_type"] = assay_type_text.strip()
+                    ix_results[cat_key].append(entry)
+                    # persist the result back to the added investigation metadata
+                    it["result"] = val
+                    if cat_key == "bloods":
+                        it["unit"] = units_text
+                        it["assay_type"] = assay_type_text
+
 
     render_added_group("Bloods (added)",   by_cat["bloods"],   "bloods")
     render_added_group("Bedside (added)",  by_cat["bedside"],  "bedside")
     render_added_group("Radiology (added)",by_cat["radiology"],"radiology")
 
+def all_filled_check(adjusted_dx, ix_results, added_ix):
+    # Check all differentials have non-zero probability
+    all_dx_filled = all(d["probability"] >= 0 for d in adjusted_dx) and len(adjusted_dx) > 0
+    # Check all added investigations have results if their checkbox is checked
+    all_ix_filled = True
+    for ix in added_ix:
+        cat  = ix.get("category", "")
+        test = ix.get("test", "")
+        chk_key = f"chk_add_{cat}_{test}"
+        if st.session_state.get(chk_key, False):
+            if ix.get("result") is None or ix.get("result", "").strip() == "":
+                all_ix_filled = False
+                break
+            if "unit" in ix and (ix.get("unit") is None or ix.get("unit", "").strip() == ""):
+                all_ix_filled = False
+                break
+            if "assay_type" in ix and (ix.get("assay_type") is None or ix.get("assay_type", "").strip() == ""):
+                all_ix_filled = False
+                break
+
+    for ix in ix_results.get('bloods', []):
+        if (ix.get("result") is None or ix.get("result", "").strip() == "" or
+            ix.get("units") is None or ix.get("units", "").strip() == "" or
+            ix.get("assay_type") is None or ix.get("assay_type", "").strip() == ""):
+            all_ix_filled = False
+            break
+    for ix in ix_results.get('bedside', []):
+        if ix.get("result") is None or ix.get("result", "").strip() == "":
+            all_ix_filled = False
+            break
+    for ix in ix_results.get('radiology', []):
+        if ix.get("result") is None or ix.get("result", "").strip() == "":
+            all_ix_filled = False
+            break
+    
+    if ix_results == {"bloods": [], "bedside": [], "radiology": []}:
+        all_ix_filled = False  # no investigations at all
+
+    return all_dx_filled and all_ix_filled
+
+
 st.divider()
 
 # ---------- SUBMIT ----------
-if st.button("Send results"):
+if st.button("Send results", help="Button disabled until all fields are filled", disabled = not all_filled_check(adjusted_dx, ix_results, st.session_state.added_ix)):
     # Merge model-entered results with session-collected ones
     # (ix_results already holds entries from both model and added tests)
     payload = {
@@ -239,3 +343,9 @@ if st.button("Send results"):
     # POST this to your backend / OpenAI calculator step.
     # import requests
     # requests.post("https://your-backend/submit", json=payload, timeout=30)
+
+adjusted_dx
+
+ix_results
+
+st.session_state.added_ix  # keep this in session for next page
