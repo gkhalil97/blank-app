@@ -1,7 +1,6 @@
 import streamlit as st
 from openai import OpenAI
 st.markdown("# Pre-test Probabilities 🎲")
-st.sidebar.markdown("# Pre-test Probabilities 🎲")
 import json
 import streamlit as st
 
@@ -14,9 +13,8 @@ if "case_data" not in st.session_state:
 
 if "AIoutput2" in st.session_state: st.session_state.case_data = st.session_state["AIoutput2"]
 
-if st.button("Use Test"): st.session_state.case_data = json.loads(raw)
-
-if st.button("Cancel Test"): st.session_state.case_data = {}
+if st.sidebar.toggle("🧪 Dev: open with sample"): st.session_state.case_data = json.loads(raw)
+else: st.session_state.case_data = {}
 
 data = st.session_state.case_data
 # ---------------------------------------------------------------
@@ -335,15 +333,34 @@ if st.button("Send results", help="Button disabled until all fields are filled",
     payload = {
         "case_id": data.get("case_id", ""),
         "adjusted_differentials": adjusted_dx,             # from model + user-added, with current slider values
-        "investigation_results": ix_results,               # only tests with results entered
-        "added_investigations": st.session_state.added_ix  # metadata of user-added tests (even if no result yet)
+        "investigation_results": ix_results,               # only tests with results entered    
     }
     st.success("Prepared payload to send:")
     st.code(payload, language="json")
-    # POST this to your backend / OpenAI calculator step.
-    # import requests
-    # requests.post("https://your-backend/submit", json=payload, timeout=30)
+    from openai import OpenAI
+    client = OpenAI()
+    with st.spinner("Generating probability..."):
+        try:
+            response = client.responses.create(
+            prompt={
+                "id": "pmpt_68c98621daec8190a1e2ff9354b55b080bfe5871c0ca28dd",
+                "version": "8",
+                "variables": {
+                    "calculation": json.dumps(payload)
+                }
+            }
+            )
 
+            if "AIoutput3" not in st.session_state: 
+                st.session_state["AIoutput3"] = {}
+            st.session_state["AIoutput3"] = json.loads(response.output_text)
+            st.write(st.session_state["AIoutput3"])
+            st.success("Response received and stored in session state as 'AIoutput3'. Proceed to next page.")
+        # POST this to your backend / OpenAI calculator step.
+        # import requests
+        # requests.post("https://your-backend/submit", json=payload, timeout=30)
+        except Exception as e:
+            st.error(f"Error during submission: {e}")
 adjusted_dx
 
 ix_results

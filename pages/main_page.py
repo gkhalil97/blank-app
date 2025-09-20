@@ -54,21 +54,21 @@ if st.button("Generate Checklist", disabled=not all_fields_filled):
         try:
             # Responses API call (text-in, text-out)
             out = client.responses.create(
-                prompt={
+                prompt= {
                     "id": "pmpt_68bf7334017481948669f4b41306f6240d2d9e134aedefe3",
                     "version": "16",
                     "variables": {
-                    "pc": pc,
-                    "age": str(age),
-                    "gender": gender,
-                    "pmhx": pmhx,
-                    "dhx":dhx
-                    }
-                }
+                        "pc": pc,
+                        "age": str(age),
+                        "gender": gender,
+                        "pmhx": pmhx,
+                        "dhx":dhx
+                        }
+                } # type: ignore
                 )
 
             try:
-                data = out.output[0].content[0].json
+                data = out.output[0].content[0].json # type: ignore
             except Exception:
                 data = json.loads(out.output_text)
 
