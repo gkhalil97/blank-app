@@ -15,7 +15,6 @@ if "case_data" not in st.session_state:
 if "AIoutput2" in st.session_state: st.session_state.case_data = st.session_state["AIoutput2"]
 
 if st.sidebar.toggle("🧪 Dev: open with sample"): st.session_state.case_data = json.loads(raw)
-else: st.session_state.case_data = {}
 
 data = st.session_state.case_data
 # ---------------------------------------------------------------
