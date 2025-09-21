@@ -9,6 +9,7 @@ import json
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.markdown("## 📝 Checklist")
+data = st.session_state.get("AIoutput", "- No checklist available")
 
 # --- DEV ONLY: boot page_2 with sample JSON ---
 if st.sidebar.toggle("🧪 Dev: open with sample"):
@@ -1148,10 +1149,9 @@ if st.sidebar.toggle("🧪 Dev: open with sample"):
   }
 }
 """
-    st.session_state["AIoutput"]=json.loads(test)
-else: st.session_state["AIoutput"]= "- No checklist available"
+    data=json.loads(test)
+else: data = "- No checklist available"
 # Grab stored text (fallback if missing)
-data = st.session_state.get("AIoutput", "- No checklist available")
 if data == "- No checklist available":
     "Please generate a checklist"
     st.stop()
