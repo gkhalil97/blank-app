@@ -2,6 +2,7 @@ import streamlit as st
 from openai import OpenAI
 st.markdown("# Pre-test Probabilities 🎲")
 import json
+import time
 import streamlit as st
 
 
@@ -88,8 +89,8 @@ if data:
 def dx_slider_block(d: Dict, idx: int):
     label = d["diagnosis"]
     p0 = float(d.get("probability", 0.0))
-    p_pct = int(round(p0 * 100))
-    p_new_pct = st.slider(f"{idx}. {label}", 0, 100, p_pct, 1, key=f"dx_{idx}_{label}")
+    p_pct = ((p0 * 100))
+    p_new_pct = st.slider(f"{idx}. {label}", 0.1, 99.9, p_pct, 0.1, key=f"dx_{idx}_{label}")
     p_new = p_new_pct / 100.0
     notes = d.get("feature_notes", "")
     if notes:
@@ -344,7 +345,7 @@ if st.button("Send results", help="Button disabled until all fields are filled",
             response = client.responses.create(
             prompt={
                 "id": "pmpt_68c98621daec8190a1e2ff9354b55b080bfe5871c0ca28dd",
-                "version": "8",
+                "version": "11",
                 "variables": {
                     "calculation": json.dumps(payload)
                 }
@@ -355,7 +356,12 @@ if st.button("Send results", help="Button disabled until all fields are filled",
                 st.session_state["AIoutput3"] = {}
             st.session_state["AIoutput3"] = json.loads(response.output_text)
             st.write(st.session_state["AIoutput3"])
-            st.success("Response received and stored in session state as 'AIoutput3'. Proceed to next page.")
+            st.success("Response received and stored in session state as 'AIoutput3'. Proceeding to next page momentarily.")
+            placeholder = st.empty()
+            for i in range (5, 0, -1):
+                placeholder.write(f"Switching to results in {i}…")
+                time.sleep(1)
+            st.switch_page("pages/page_4.py")
         # POST this to your backend / OpenAI calculator step.
         # import requests
         # requests.post("https://your-backend/submit", json=payload, timeout=30)
