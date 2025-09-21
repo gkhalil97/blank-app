@@ -1150,10 +1150,9 @@ if st.sidebar.toggle("🧪 Dev: open with sample"):
 }
 """
     data=json.loads(test)
-else: data = "- No checklist available"
 # Grab stored text (fallback if missing)
 if data == "- No checklist available":
-    "Please generate a checklist"
+    st.warning("Please generate a checklist")
     st.stop()
 
 
