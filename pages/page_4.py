@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import streamlit as st
 
-st.set_page_config(page_title="Diagnosis Inference", page_icon="🧠", layout="wide")
+#st.set_page_config(page_title="Diagnosis Inference", page_icon="🧠", layout="wide")
 
 # ---------------------------------------------
 # 1) Wire this to AI output (a Python dict)
