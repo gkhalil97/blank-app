@@ -14,7 +14,7 @@ SAMPLE_JSON = r"""{
 "differentials": [
 {
 "condition": "Aortic dissection",
-"pre_test_probability": 1,
+"pre_test_probability": 0.99,
 "likelihood_ratios": [
 {
 "test_name": "Portable chest X-ray (CXR)",
@@ -25,7 +25,7 @@ SAMPLE_JSON = r"""{
 "reference": "Rational Clinical Examination: normal mediastinum on CXR reduces odds of dissection (LR−≈0.3). Widened mediastinum increases odds (LR+ reported ~3–10 across studies). JAMA. 2002;287:2262-72; later reviews show LR− range 0.14–0.60. citeturn6search2turn13search0"
 }
 ],
-"post_test_probability": 1,
+"post_test_probability": 0.97,
 "reasoning": "Search/lookup and classification:\n- Chest X-ray and aortic dissection: JAMA Rational Clinical Examination reports that a normal mediastinum/aorta on CXR decreases the probability of acute thoracic aortic dissection with LR−≈0.3; subsequent meta-analyses show LR− ranging ~0.14–0.60. We use LR−=0.30. citeturn6search2turn13search0\nCalculations (Bayes):\n- Given pre-test probability p=1.00 (odds=∞), any finite LR (including LR−=0.30) leaves odds=∞ → post-test probability remains 1.00. This indicates the provided pre-test (100%) is not updateable by testing; if your intended pre-test was lower (e.g., 0.20), then with LR−=0.30: odds 0.20/(0.80)=0.25 → 0.25×0.30=0.075 → post-test p=0.075/(1+0.075)=0.0698 (≈7.0%).\nNotes/limitations:\n- CXR cannot exclude dissection; if suspicion is material, definitive imaging (CTA/TEE/MRA) is required. The pre-test probability of 100% is likely a placeholder—please confirm an intended value to enable meaningful updating. citeturn6search5"
 },
 {
