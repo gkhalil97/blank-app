@@ -1323,16 +1323,20 @@ def render_item(item):
         st.warning(f"Unknown output_style: {style}")
         return
     
-    
-    if explanation:
-        if st.checkbox("More info", key=f"exp_{oid}"):
-            st.markdown(explanation)
-    
+    colA, colB = st.columns([1,4])
+
+    with colA:
+        if explanation:
+            if st.checkbox("More info", key=f"exp_{oid}"):
+                st.markdown(explanation)
+   
     answers[oid] = val
-    if style != "free_text":
-      if st.checkbox("Comment", key=f"comm_{oid}"):
-          comment = st.text_area("Comment", value=answers.get(f"{oid}_comment", ""), key=f"comm_text_{oid}")
-          answers[f"{oid}_comment"] = comment
+
+    with colB:
+      if style != "free_text":
+        if st.checkbox("Comment", key=f"comm_{oid}"):
+            comment = st.text_area("Comment", value=answers.get(f"{oid}_comment", ""), key=f"comm_text_{oid}")
+            answers[f"{oid}_comment"] = comment
       # Persist
     
 
