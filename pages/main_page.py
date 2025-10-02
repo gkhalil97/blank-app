@@ -79,7 +79,7 @@ if st.button("Generate Checklist", disabled=not all_fields_filled):
                             "pmhx": pmhx,
                             "dhx":dhx
                             }
-                    } # type: ignore
+                    }, # type: ignore
                     store=True
                     )
             try:

@@ -1380,7 +1380,7 @@ if st.button("Submit Checklist"):
                     "variables": {
                         "answer": json.dumps(answers)
                         }},
-                store=True,
+                store= True,
                 previous_response_id=st.session_state.get("checklist_id")  
             )
 
