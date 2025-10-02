@@ -1324,10 +1324,11 @@ def render_item(item):
         return
     
     answers[oid] = val
-    if st.checkbox("Comment", key=f"comm_{oid}"):
-        comment = st.text_area("Comment", value=answers.get(f"{oid}_comment", ""), key=f"comm_text_{oid}")
-        answers[f"{oid}_comment"] = comment
-    # Persist
+    if style != "free_text":
+      if st.checkbox("Comment", key=f"comm_{oid}"):
+          comment = st.text_area("Comment", value=answers.get(f"{oid}_comment", ""), key=f"comm_text_{oid}")
+          answers[f"{oid}_comment"] = comment
+      # Persist
     
 
 
@@ -1374,8 +1375,8 @@ if st.button("Submit Checklist"):
                     "variables": {
                         "answer": json.dumps(answers)
                         }},
-                #store=True,
-                #previous_response_id=st.session_state.get("checklist_id")  
+                store=True,
+                previous_response_id=st.session_state.get("checklist_id")  
             )
 
             # Extract the text

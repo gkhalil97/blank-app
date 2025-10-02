@@ -53,20 +53,35 @@ if st.button("Generate Checklist", disabled=not all_fields_filled):
     with st.spinner("Generating checklist..."):
         try:
             # Responses API call (text-in, text-out)
-            out = client.responses.create(
-                prompt= {
-                    "id": "pmpt_68bf7334017481948669f4b41306f6240d2d9e134aedefe3",
-                    "version": "16",
-                    "variables": {
-                        "pc": pc,
-                        "age": str(age),
-                        "gender": gender,
-                        "pmhx": pmhx,
-                        "dhx":dhx
-                        }
-                } # type: ignore
-                )
-
+            if pc == "Chest Pain":
+                out = client.responses.create(
+                    prompt= {
+                        "id": "pmpt_68bf7334017481948669f4b41306f6240d2d9e134aedefe3",
+                        "version": "22",
+                        "variables": {
+                            "pc": pc,
+                            "age": str(age),
+                            "gender": gender,
+                            "pmhx": pmhx,
+                            "dhx":dhx
+                            }
+                    } # type: ignore
+                    )
+            else: 
+                out = client.responses.create(
+                    prompt= {
+                        "id": "pmpt_68d154bc037c8196bca817fb873d0fca076e02cfb8566420",
+                        "version": "2", 
+                        "variables": {
+                            "pc": pc,
+                            "age": str(age),
+                            "gender": gender,
+                            "pmhx": pmhx,
+                            "dhx":dhx
+                            }
+                    } # type: ignore
+                    store=True
+                    )
             try:
                 data = out.output[0].content[0].json # type: ignore
             except Exception:
