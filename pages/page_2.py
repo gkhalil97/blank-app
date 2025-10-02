@@ -1237,7 +1237,7 @@ def render_item(item):
     maximum = item["maximum"]
     step = item["step"]
     unit = item["unit"]
-    pattern = item["pattern"]
+    explanation = item["explanation"]
     min_len = item["minLength"]
     max_len = item["maxLength"]
 
@@ -1322,6 +1322,11 @@ def render_item(item):
     else:
         st.warning(f"Unknown output_style: {style}")
         return
+    
+    
+    if explanation:
+        with st.expander("More info", expanded=False):
+            st.markdown(explanation)
     
     answers[oid] = val
     if style != "free_text":
