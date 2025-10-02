@@ -1325,19 +1325,17 @@ def render_item(item):
     
     colA, colB = st.columns([1,4])
 
-    with colA:
-        if explanation:
-            if st.checkbox("More info", key=f"exp_{oid}"):
-                st.markdown(explanation)
+    if explanation:
+        if colA.checkbox("More info", key=f"exp_{oid}"):
+            st.markdown(explanation)
    
     answers[oid] = val
 
-    with colB:
-      if style != "free_text":
-        if st.checkbox("Comment", key=f"comm_{oid}"):
-            comment = st.text_area("Comment", value=answers.get(f"{oid}_comment", ""), key=f"comm_text_{oid}")
-            answers[f"{oid}_comment"] = comment
-      # Persist
+    if style != "free_text":
+      if colB.checkbox("Comment", key=f"comm_{oid}"):
+          comment = st.text_area("Comment", value=answers.get(f"{oid}_comment", ""), key=f"comm_text_{oid}")
+          answers[f"{oid}_comment"] = comment
+    # Persist
     
 
 
