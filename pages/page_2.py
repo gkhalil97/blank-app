@@ -1322,9 +1322,13 @@ def render_item(item):
     else:
         st.warning(f"Unknown output_style: {style}")
         return
-
-    # Persist
+    
     answers[oid] = val
+    if st.checkbox("Comment", key=f"comm_{oid}"):
+        comment = st.text_area("Comment", value=answers.get(f"{oid}_comment", ""), key=f"comm_text_{oid}")
+        answers[f"{oid}_comment"] = comment
+    # Persist
+    
 
 
 # Render each section in schema order
