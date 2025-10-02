@@ -1325,7 +1325,7 @@ def render_item(item):
     
     
     if explanation:
-        with st.expander("More info", expanded=False):
+        if st.checkbox("More info", key=f"exp_{oid}"):
             st.markdown(explanation)
     
     answers[oid] = val
