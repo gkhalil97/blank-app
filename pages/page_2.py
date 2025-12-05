@@ -2581,9 +2581,10 @@ if st.button("Submit Checklist"):
             out = client.responses.create (
                 prompt = {
                     "id": "pmpt_68c18bb506ec819685c867061bbce13802152266a9918ce2",
-                    "version": "22",
+                    "version": "26",
                     "variables": {
-                        "answer": json.dumps(answers)
+                        "answer": json.dumps(answers),
+                        "template": json.dumps(data)
                         }},
                 store= True,
                 previous_response_id=st.session_state.get("checklist_id")  
