@@ -101,6 +101,3 @@ if st.button("Generate Checklist", disabled=not all_fields_filled):
             st.switch_page("pages/page_2.py")
         except Exception as e:
             st.error(f"Checklist request failed: {e}")
-    
-   
-      
